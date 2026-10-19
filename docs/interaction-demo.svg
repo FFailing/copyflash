@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="280" viewBox="0 0 900 280" role="img" aria-labelledby="title desc">
+  <title id="title">CopyFlash 复制反差色反馈示意</title>
+  <desc id="desc">正常选中文字，按 Ctrl+C 后反色 300 毫秒，再恢复原来的显示。这是交互示意，不是 Windows 录屏。</desc>
+  <rect width="900" height="280" rx="18" fill="#f3f1ea"/>
+  <text x="36" y="42" fill="#626c64" font-family="sans-serif" font-size="20">CopyFlash · 交互示意，非 Windows 原生录屏</text>
+  <rect x="36" y="73" width="828" height="122" rx="14" fill="#ffffff"/>
+  <rect x="58" y="105" width="784" height="59" fill="#202522"/>
+  <text x="75" y="147" fill="#f3f1ea" font-family="sans-serif" font-size="36">让刚复制的文字，短暂亮一下。</text>
+  <text x="36" y="246" fill="#202522" font-family="sans-serif" font-size="24">选中文字 → Ctrl+C → 反差色 300 ms → 恢复原样</text>
+</svg>
