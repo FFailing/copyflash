@@ -1,0 +1,6 @@
+dist/
+*.zip
+*.user
+*.log
+*.pdb
+TestResults/
