@@ -1,0 +1,56 @@
+name: Windows preview
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        shell: pwsh
+        run: ./build.ps1
+      - name: Self-test
+        shell: pwsh
+        run: |
+          $testProcess = Start-Process -FilePath ./dist/CopyFlash.exe -ArgumentList '--self-test' -Wait -PassThru
+          if ($testProcess.ExitCode -ne 0) { throw 'CopyFlash self-test failed' }
+      - name: Package
+        shell: pwsh
+        run: |
+          Compress-Archive -Path ./dist/* -DestinationPath ./CopyFlash-windows-x64.zip
+          Get-FileHash -Algorithm SHA256 ./CopyFlash-windows-x64.zip | ForEach-Object {
+            ($_.Hash.ToLowerInvariant() + '  CopyFlash-windows-x64.zip') | Set-Content ./SHA256SUMS.txt -Encoding ASCII
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CopyFlash-windows-x64
+          path: |
+            CopyFlash-windows-x64.zip
+            SHA256SUMS.txt
+  publish:
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: CopyFlash-windows-x64
+          path: release
+      - name: Attach verified build to release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          gh release upload $env:RELEASE_TAG ./release/CopyFlash-windows-x64.zip ./release/SHA256SUMS.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Release upload failed' }
